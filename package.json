@@ -34,7 +34,7 @@
     "handlebars": "^4.7.8",
     "nodemailer": "^6.9.9",
     "redis": "^4.6.13",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.2.0",
     "request-ip": "^3.3.0",
     "rxjs": "^7.8.1"
   },
