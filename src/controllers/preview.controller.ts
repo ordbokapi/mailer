@@ -1,8 +1,10 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { Template, TemplateService } from '../providers';
+import { DevOnly } from '../utils';
 
 @Controller()
+@DevOnly()
 export class PreviewController {
   constructor(private readonly templateService: TemplateService) {}
 

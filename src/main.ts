@@ -18,6 +18,7 @@ Options:
   --log-level <log-level>  Specify the minimum log level to display
   --debug-cache            Cache debug mode, logs cache stats every second.
                            Disables other logs.
+  --prod                   Run in production mode
 `);
     process.exit(0);
   }
@@ -25,6 +26,10 @@ Options:
   // Define log levels in order of severity
   const logLevels: LogLevel[] = ['verbose', 'debug', 'warn', 'error', 'fatal'];
   const prod = isProd();
+
+  if (prod) {
+    console.log('Running in production mode');
+  }
 
   // Get log level from command parameters or environment variable
   let minLogLevel = process.argv.includes('--log-level')
