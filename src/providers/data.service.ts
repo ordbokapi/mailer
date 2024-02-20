@@ -1,32 +1,43 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { createClient, RedisClientType } from 'redis';
-import { IAppSecrets } from './i-app-secrets';
 import { CryptoService } from './crypto.service';
-import * as crypto from 'crypto';
+import { AppSecretsService } from './app-secrets.provider';
+import { Template, Templates } from './template.service';
 
 const enum RedisKeys {
   emailQueue = 'emailQueue',
   unsubscribeTokensByEmail = 'unsubscribeTokensByEmail',
   emailByUnsubscribeToken = 'emailByUnsubscribeToken',
-  verificationTokensByEmail = 'verificationTokensByEmail',
 }
 
-export interface Email {
-  template: string;
+export interface Email<T extends Template> {
+  template: T;
   subject: string;
-  params: Record<string, string>;
+  params: Omit<Templates[T], 'unsubscribeUrl'>;
+  needsUnsubscribeLink?: boolean;
 }
 
-export interface QueuedEmail extends Email {
+export interface QueuedEmail<T extends Template> extends Email<T> {
   addresses: string[];
+}
+
+export interface Subscriber {
+  email: string;
+  unsubscribeToken: string;
+}
+
+export interface PendingSubscriber {
+  email: string;
+  verificationToken: string;
 }
 
 @Injectable()
 export class DataService {
   private readonly client: RedisClientType;
+  readonly #logger = new Logger(DataService.name);
 
   constructor(
-    @Inject('IAppSecrets') private readonly appSecrets: IAppSecrets,
+    appSecrets: AppSecretsService,
     private readonly cryptoService: CryptoService,
   ) {
     this.client = createClient({
@@ -36,9 +47,29 @@ export class DataService {
       },
     });
 
-    this.client.connect().catch((err) => {
-      console.error('Failed to connect to Redis');
-      console.error(err);
+    this.client
+      .connect()
+      .then(() => {
+        // log errors
+        this.client.on('error', (err) => {
+          this.#logger.error(`Redis error: ${err?.message || err?.code}`);
+        });
+      })
+      .catch((err) => {
+        this.#logger.fatal(
+          `Failed to connect to Redis: ${err?.message || err?.code}`,
+        );
+        setTimeout(() => process.exit(1), 1000);
+      });
+
+    // log reconnections
+    this.client.on('reconnecting', () => {
+      this.#logger.debug('Reconnecting to Redis...');
+    });
+
+    // log successful connections
+    this.client.on('connect', () => {
+      this.#logger.log('Connected to Redis');
     });
   }
 
@@ -54,231 +85,222 @@ export class DataService {
     Hash, key is the unsubscribe token, value is the email address:
     `emailByUnsubscribeToken`
 
-    Hash, key is the verification token, value is the email address:
-    `verificationTokensByEmail`
+    String key, name is the verification token, value is the email address:
+    `verify_${token}` (expires after a set time period)
 
     All keys and values are encrypted using the cryptoService.
   */
 
-  async enqueueEmail(email: Email | QueuedEmail, tail = false): Promise<void> {
-    const fullEmail: QueuedEmail =
+  /**
+   * Adds a subscriber to Redis.
+   * @param subscriber The subscriber to add.
+   */
+  async addSubscriber(subscriber: Subscriber): Promise<void> {
+    const { email, unsubscribeToken } = subscriber;
+
+    await this.client.hSet(
+      RedisKeys.unsubscribeTokensByEmail,
+      this.cryptoService.encrypt(email),
+      this.cryptoService.encrypt(unsubscribeToken),
+    );
+    await this.client.hSet(
+      RedisKeys.emailByUnsubscribeToken,
+      this.cryptoService.encrypt(unsubscribeToken),
+      this.cryptoService.encrypt(email),
+    );
+  }
+
+  /**
+   * Retrieves all subscribers from Redis.
+   * @returns A promise that resolves to an array of subscribers.
+   */
+  async getSubscribers(): Promise<Subscriber[]> {
+    const encryptedSubscribers = await this.client.hGetAll(
+      RedisKeys.unsubscribeTokensByEmail,
+    );
+
+    return Object.entries(encryptedSubscribers).map(
+      ([email, unsubscribeToken]) => ({
+        email: this.cryptoService.decrypt(email),
+        unsubscribeToken: this.cryptoService.decrypt(unsubscribeToken),
+      }),
+    );
+  }
+
+  /**
+   * Removes a subscriber from Redis.
+   * @param email The email address of the subscriber to remove.
+   * @returns A promise that resolves to a boolean indicating whether the
+   * subscriber was successfully removed.
+   */
+  async removeSubscriber(email: string): Promise<boolean> {
+    const count = await this.client.hDel(
+      RedisKeys.unsubscribeTokensByEmail,
+      this.cryptoService.encrypt(email),
+    );
+
+    if (count === 0) {
+      return false;
+    }
+
+    await this.client.hDel(
+      RedisKeys.emailByUnsubscribeToken,
+      this.cryptoService.encrypt(email),
+    );
+    return true;
+  }
+
+  /**
+   * Removes a subscriber from Redis using their unsubscribe token.
+   * @param unsubscribeToken The unsubscribe token of the subscriber to remove.
+   * @returns A promise that resolves to a boolean indicating whether the
+   * subscriber was successfully removed.
+   */
+  async removeSubscriberByToken(unsubscribeToken: string): Promise<boolean> {
+    const email = await this.client.hGet(
+      RedisKeys.emailByUnsubscribeToken,
+      this.cryptoService.encrypt(unsubscribeToken),
+    );
+
+    if (!email) {
+      return false;
+    }
+
+    await this.client.hDel(
+      RedisKeys.unsubscribeTokensByEmail,
+      this.cryptoService.encrypt(email),
+    );
+    await this.client.hDel(
+      RedisKeys.emailByUnsubscribeToken,
+      this.cryptoService.encrypt(unsubscribeToken),
+    );
+    return true;
+  }
+
+  /**
+   * Checks if a subscriber is subscribed.
+   * @param email The email address of the subscriber to check.
+   * @returns A promise that resolves to a boolean indicating whether the
+   * subscriber is subscribed.
+   */
+  async isSubscribed(email: string): Promise<boolean> {
+    return await this.client.hExists(
+      RedisKeys.unsubscribeTokensByEmail,
+      this.cryptoService.encrypt(email),
+    );
+  }
+
+  /**
+   * Adds a pending subscriber to Redis. Pending subscribers are those who have
+   * signed up but have not yet verified their email address.
+   * @param pendingSubscriber The pending subscriber to add.
+   * @param expireAfter The time in seconds after which the verification token
+   * should expire.
+   */
+  async addPendingSubscriber(
+    pendingSubscriber: PendingSubscriber,
+    expireAfter: number,
+  ): Promise<void> {
+    const { email, verificationToken } = pendingSubscriber;
+
+    await this.client.set(
+      `verify_${this.cryptoService.encrypt(verificationToken)}`,
+      this.cryptoService.encrypt(email),
+      { EX: expireAfter },
+    );
+  }
+
+  /**
+   * Retrieves a pending subscriber from Redis.
+   * @param verificationToken The verification token of the pending subscriber
+   * to retrieve.
+   * @returns A promise that resolves to the pending subscriber, or null if the
+   * verification token is invalid or has expired.
+   */
+  async getPendingSubscriber(
+    verificationToken: string,
+  ): Promise<PendingSubscriber | null> {
+    const email = await this.client.get(
+      `verify_${this.cryptoService.encrypt(verificationToken)}`,
+    );
+
+    if (!email) {
+      return null;
+    }
+
+    return { email: this.cryptoService.decrypt(email), verificationToken };
+  }
+
+  /**
+   * Removes a pending subscriber from Redis.
+   * @param verificationToken The verification token of the pending subscriber
+   * to remove.
+   * @returns A promise that resolves to a boolean indicating whether the
+   * pending subscriber was successfully removed.
+   */
+  async removePendingSubscriber(verificationToken: string): Promise<boolean> {
+    const count = await this.client.del(
+      `verify_${this.cryptoService.encrypt(verificationToken)}`,
+    );
+
+    return count > 0;
+  }
+
+  /**
+   * Adds an email to the queue of emails to send. The email is added to the
+   * back of the queue.
+   * @param email The email to add to the queue.
+   */
+  async queueEmail<T extends Template>(
+    email: QueuedEmail<T> | Email<T>,
+  ): Promise<void> {
+    const queuedEmail: QueuedEmail<T> =
       'addresses' in email
         ? email
         : {
             ...email,
-            addresses: await this.getSubscriberAddresses(),
+            addresses: await this.getSubscribers().then((subscribers) =>
+              subscribers.map((s) => s.email),
+            ),
           };
 
-    const serialized = this.cryptoService.encrypt(JSON.stringify(fullEmail));
-
-    if (tail) {
-      await this.client.rPush(RedisKeys.emailQueue, serialized);
-      return;
-    }
-
-    await this.client.lPush(RedisKeys.emailQueue, serialized);
-  }
-
-  async dequeueEmail(): Promise<QueuedEmail | undefined> {
-    const email = await this.client.lPop(RedisKeys.emailQueue);
-
-    if (email) {
-      return JSON.parse(this.cryptoService.decrypt(email));
-    }
+    await this.client.rPush(
+      RedisKeys.emailQueue,
+      this.cryptoService.encrypt(JSON.stringify(queuedEmail)),
+    );
   }
 
   /**
-   * Subscribes an email for notifications. Generates a unique token and stores
-   * it in Redis along with the encrypted email. If the email is already
-   * subscribed, returns undefined.
-   *
-   * @param email The email to subscribe.
-   * @returns A unique token if the email is successfully subscribed, otherwise
-   * undefined.
+   * Retrieves an email from the front of the queue of emails to send.
+   * @returns A promise that resolves to the email at the front of the queue, or
+   * null if the queue is empty.
    */
-  async subscribeEmail(email: string): Promise<string | undefined> {
-    const token = crypto.randomBytes(16).toString('hex');
+  async dequeueEmail(): Promise<QueuedEmail<Template> | null> {
+    const encryptedEmail = await this.client.lPop(RedisKeys.emailQueue);
 
-    const existingToken = await this.client.hGet(
+    if (!encryptedEmail) {
+      return null;
+    }
+
+    return JSON.parse(this.cryptoService.decrypt(encryptedEmail));
+  }
+
+  /**
+   * Retrieves the unsubscribe tokens for multiple subscribers.
+   * @param emails The email addresses of the subscribers to retrieve the
+   * unsubscribe tokens for.
+   * @returns A promise that resolves to an array of unsubscribe tokens. If a
+   * subscriber is not subscribed, the corresponding array element will be null.
+   */
+  async getUnsubscribeTokens(emails: string[]): Promise<(string | null)[]> {
+    const encryptedTokens = await this.client.hmGet(
       RedisKeys.unsubscribeTokensByEmail,
-      this.cryptoService.encrypt(email),
+      emails.map((email) => this.cryptoService.encrypt(email)),
     );
 
-    if (existingToken) {
-      return undefined;
-    }
-
-    await this.client.hSet(
-      RedisKeys.unsubscribeTokensByEmail,
-      this.cryptoService.encrypt(email),
-      this.cryptoService.encrypt(token),
+    return encryptedTokens.map((encryptedToken) =>
+      encryptedToken ? this.cryptoService.decrypt(encryptedToken) : null,
     );
-    await this.client.hSet(
-      RedisKeys.emailByUnsubscribeToken,
-      this.cryptoService.encrypt(token),
-      this.cryptoService.encrypt(email),
-    );
-
-    return token;
-  }
-
-  /**
-   * Unsubscribes an email using the provided token.
-   * @param token The token used to identify the email to unsubscribe.
-   * @returns A promise that resolves to a boolean indicating whether the email
-   * was successfully unsubscribed.
-   */
-  async unsubscribeEmail(token: string): Promise<boolean> {
-    const email = await this.client.hGet(
-      RedisKeys.emailByUnsubscribeToken,
-      this.cryptoService.encrypt(token),
-    );
-
-    if (!email) {
-      return false;
-    }
-
-    await this.client.hDel(
-      RedisKeys.unsubscribeTokensByEmail,
-      this.cryptoService.encrypt(this.cryptoService.decrypt(email)),
-    );
-    await this.client.hDel(RedisKeys.emailByUnsubscribeToken, token);
-
-    return true;
-  }
-
-  /**
-   * Retrieves all email addresses that are subscribed for notifications, along
-   * with their unique unsubscribe tokens.
-   * @returns A promise that resolves to a map of email addresses to their
-   * unique unsubscribe tokens.
-   */
-  async getSubscribers(): Promise<Record<string, string>> {
-    const encryptedEmails = await this.client.hGetAll(
-      RedisKeys.unsubscribeTokensByEmail,
-    );
-
-    return Object.fromEntries(
-      Object.entries(encryptedEmails).map(([email, token]) => [
-        this.cryptoService.decrypt(email),
-        this.cryptoService.decrypt(token),
-      ]),
-    );
-  }
-
-  /**
-   * Retrieves all email addresses that are subscribed for notifications.
-   * @returns A promise that resolves to an array of email addresses.
-   */
-  async getSubscriberAddresses(): Promise<string[]> {
-    const encryptedEmails = await this.client.hKeys(
-      RedisKeys.unsubscribeTokensByEmail,
-    );
-
-    return encryptedEmails.map((email) => this.cryptoService.decrypt(email));
-  }
-
-  /**
-   * Retrieves the unique unsubscribe token for the provided email address.
-   * @param email The email address to retrieve the token for.
-   * @returns A promise that resolves to the unique unsubscribe token for the
-   * provided email address, or undefined if the email address is not
-   * subscribed.
-   */
-  async getUnsubscribeToken(email: string): Promise<string | undefined> {
-    const token = await this.client.hGet(
-      RedisKeys.unsubscribeTokensByEmail,
-      this.cryptoService.encrypt(email),
-    );
-
-    if (token) {
-      return this.cryptoService.decrypt(token);
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Generates a unique verification token and stores it in Redis along with the
-   * encrypted email. If the email is already verified, returns undefined. If
-   * a verification token already exists for the email, a new one is generated
-   * and stored, and the old one is overwritten.
-   * @param email The email to create a verification token for.
-   * @returns A promise that resolves to the unique verification token if a
-   * token was successfully created, otherwise undefined.
-   */
-  async createVerificationToken(email: string): Promise<string | undefined> {
-    if (await this.isEmailVerified(email)) {
-      return undefined;
-    }
-
-    const token = crypto.randomBytes(16).toString('hex');
-
-    await this.client.hSet(
-      RedisKeys.verificationTokensByEmail,
-      this.cryptoService.encrypt(email),
-      this.cryptoService.encrypt(token),
-    );
-
-    return token;
-  }
-
-  /**
-   * Retrieves the unique verification token for the provided email address.
-   * @param email The email address to retrieve the token for.
-   * @returns A promise that resolves to the unique verification token for the
-   * provided email address, or undefined if the email address is not verified.
-   */
-  async getVerificationToken(email: string): Promise<string | undefined> {
-    const token = await this.client.hGet(
-      RedisKeys.verificationTokensByEmail,
-      this.cryptoService.encrypt(email),
-    );
-
-    if (token) {
-      return this.cryptoService.decrypt(token);
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Verifies an email using the provided token.
-   * @param token The token used to identify the email to verify.
-   * @returns A promise that resolves to a boolean indicating whether the email
-   * was successfully verified.
-   */
-  async verifyEmail(token: string): Promise<boolean> {
-    const email = await this.client.hGet(
-      RedisKeys.verificationTokensByEmail,
-      this.cryptoService.encrypt(token),
-    );
-
-    if (!email) {
-      return false;
-    }
-
-    await this.client.hDel(
-      RedisKeys.verificationTokensByEmail,
-      this.cryptoService.encrypt(this.cryptoService.decrypt(email)),
-    );
-
-    return true;
-  }
-
-  /**
-   * Checks if the provided email address is verified.
-   * @param email The email address to check.
-   * @returns A promise that resolves to a boolean indicating whether the email
-   * address is verified.
-   */
-  async isEmailVerified(email: string): Promise<boolean> {
-    const token = await this.client.hGet(
-      RedisKeys.verificationTokensByEmail,
-      this.cryptoService.encrypt(email),
-    );
-
-    return !!token;
   }
 
   /**

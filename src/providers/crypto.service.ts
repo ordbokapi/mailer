@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { IAppSecrets } from './i-app-secrets';
+import { AppSecretsService } from './app-secrets.provider';
 
 @Injectable()
 export class CryptoService {
-  constructor(@Inject('IAppSecrets') private readonly secrets: IAppSecrets) {}
+  constructor(private readonly secrets: AppSecretsService) {}
 
   encrypt(data: string): string {
     const cipher = crypto.createCipheriv(

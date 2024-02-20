@@ -4,23 +4,51 @@
  * in the middle.
  */
 export function wrapText(text: string, width: number): string {
-  const words = text.split(/(\s+|-)/);
-  const lines: string[] = [];
-  let currentLine = '';
+  let result = '';
+  let lineLength = 0;
 
-  for (const word of words) {
-    if (currentLine.length + word.length + 1 <= width) {
-      if (currentLine.length > 0) {
-        currentLine += ' ';
+  // Split the text into segments that include words, spaces, and hyphens. Keep
+  // everything, including multiple consecutive spaces.
+  const segments = text.split(/(\s|-)/);
+
+  for (const segment of segments) {
+    if (segment === '\n') {
+      // Directly append line breaks and reset line length.
+      result += segment;
+      lineLength = 0;
+    } else if (segment.trim().length === 0) {
+      // For purely whitespace segments (including spaces), add them if they
+      // fit; break line otherwise.
+      if (lineLength + segment.length > width && lineLength > 0) {
+        // Trim leading whitespace from the segment if it's the start of a new
+        // line.
+        const trimmed = segment.trimStart();
+
+        result += '\n' + trimmed;
+        lineLength = trimmed.length;
+      } else {
+        result += segment;
+        lineLength += segment.length;
       }
-      currentLine += word;
+    } else if (lineLength + segment.length > width) {
+      // If adding the next segment exceeds the width, break the line unless
+      // it's the first segment.
+      if (lineLength > 0) {
+        result += '\n';
+        lineLength = 0;
+      }
+      // Trim leading whitespace from the segment if it's the start of a new
+      // line.
+      const trimmed = segment.trimStart();
+
+      result += trimmed;
+      lineLength += trimmed.length;
     } else {
-      lines.push(currentLine);
-      currentLine = word;
+      // Append the segment to the result.
+      result += segment;
+      lineLength += segment.length;
     }
   }
 
-  lines.push(currentLine);
-
-  return lines.join('\n');
+  return result;
 }

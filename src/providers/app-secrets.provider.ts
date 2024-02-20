@@ -1,49 +1,96 @@
-import type { Provider } from '@nestjs/common';
-import type { IAppSecrets } from './i-app-secrets';
+import { Injectable } from '@nestjs/common';
 import { readFileSync } from 'fs';
+import { envify } from '../utils';
 
-export function getAppSecretsProvider(): Provider<IAppSecrets> {
-  const secrets: Partial<IAppSecrets> = {
-    mailHost: process.env.MAIL_HOST,
-    mailPort: parseInt(process.env.MAIL_PORT || '0', 10),
-    mailSecure: process.env.MAIL_SECURE === 'true',
-    mailUser: process.env.MAIL_USER,
-    mailPass: process.env.MAIL_PASS,
-    mailFrom: process.env.MAIL_FROM,
+const getEnv = (
+  key: keyof AppSecretsService,
+  fallback?: string,
+): string | undefined => process.env[envify(key)] || fallback;
 
-    recordKey: process.env.RECORD_KEY,
-    recordIV: process.env.RECORD_IV,
-    recordSalt: process.env.RECORD_SALT,
+const getEnvBool = (
+  key: keyof AppSecretsService,
+  fallback?: boolean,
+): boolean | undefined => {
+  const value = getEnv(key);
+  return value === undefined ? fallback : value === 'true';
+};
 
-    redisHost: process.env.REDIS_HOST,
-    redisPort: parseInt(process.env.REDIS_PORT || '0', 10),
-  };
+const getEnvInt = (
+  key: keyof AppSecretsService,
+  fallback?: number,
+): number | undefined => {
+  const value = getEnv(key);
+  return value === undefined ? fallback : parseInt(value, 10);
+};
 
-  try {
-    const file = readFileSync('secrets.json', 'utf8');
-    const json = JSON.parse(file);
+@Injectable()
+export class AppSecretsService {
+  public readonly apiKey: string;
 
-    Object.assign(secrets, json);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
+  public readonly mailHost: string;
+  public readonly mailPort: number;
+  public readonly mailRequireTLS: boolean;
+  public readonly mailSecure: boolean;
+  public readonly mailUser: string;
+  public readonly mailPass: string;
+  public readonly mailFrom: string;
+  public readonly mailAcceptUnauthorized: boolean;
+
+  public readonly recordKey: string;
+  public readonly recordIV: string;
+  public readonly recordSalt: string;
+
+  public readonly redisHost: string;
+  public readonly redisPort: number;
+
+  public readonly baseUrl: string;
+  public readonly frontendUrl: string;
+
+  constructor() {
+    const secrets: Partial<AppSecretsService> = {
+      apiKey: getEnv('apiKey'),
+
+      mailHost: getEnv('mailHost'),
+      mailPort: getEnvInt('mailPort'),
+      mailRequireTLS: getEnvBool('mailRequireTLS', true),
+      mailSecure: getEnvBool('mailSecure', true),
+      mailUser: getEnv('mailUser'),
+      mailPass: getEnv('mailPass'),
+      mailFrom: getEnv('mailFrom'),
+      mailAcceptUnauthorized: getEnvBool('mailAcceptUnauthorized', false),
+
+      recordKey: getEnv('recordKey'),
+      recordIV: getEnv('recordIV'),
+      recordSalt: getEnv('recordSalt'),
+
+      redisHost: getEnv('redisHost'),
+      redisPort: getEnvInt('redisPort', 6379),
+
+      baseUrl: getEnv('baseUrl'),
+      frontendUrl: getEnv('frontendUrl'),
+    };
+
+    try {
+      const file = readFileSync('secrets.json', 'utf8');
+      const json = JSON.parse(file);
+
+      Object.assign(secrets, json);
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        throw error;
+      }
     }
-  }
 
-  for (const key of Object.keys(secrets) as Array<keyof IAppSecrets>) {
-    if (!secrets[key]) {
-      throw new Error(`Missing environment variable: ${key}`);
+    for (const key of Object.keys(secrets) as Array<keyof AppSecretsService>) {
+      if (secrets[key] === undefined) {
+        throw new Error(`Missing environment variable: ${key}`);
+      }
+
+      this[key as keyof this] = secrets[key] as any;
+
+      Object.freeze(this[key]);
     }
+
+    Object.freeze(this);
   }
-
-  Object.freeze(secrets);
-
-  for (const key of Object.keys(secrets) as Array<keyof IAppSecrets>) {
-    Object.freeze(secrets[key]);
-  }
-
-  return {
-    provide: 'IAppSecrets',
-    useValue: secrets as IAppSecrets,
-  };
 }

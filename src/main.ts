@@ -6,6 +6,8 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import * as requestIp from 'request-ip';
+import { AppSecretsService } from './providers';
+import { isProd } from './utils';
 
 async function bootstrap() {
   if (process.argv.includes('--help')) {
@@ -22,11 +24,12 @@ Options:
 
   // Define log levels in order of severity
   const logLevels: LogLevel[] = ['verbose', 'debug', 'warn', 'error', 'fatal'];
+  const prod = isProd();
 
   // Get log level from command parameters or environment variable
   let minLogLevel = process.argv.includes('--log-level')
     ? process.argv[process.argv.indexOf('--log-level') + 1]
-    : process.env.NODE_ENV === 'production'
+    : prod
       ? 'warn'
       : 'verbose';
 
@@ -42,9 +45,13 @@ Options:
   );
 
   // Disable colour logging in production
-  if (process.env.NODE_ENV === 'production') {
+  if (prod) {
     process.env.NO_COLOR = 'true';
   }
+
+  const filteredLogLevels: LogLevel[] = ['log', ...logLevelArray];
+
+  (globalThis as any).logLevels = filteredLogLevels;
 
   const port = process.argv.includes('--port')
     ? process.argv[process.argv.indexOf('--port') + 1]
@@ -55,21 +62,24 @@ Options:
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
-    { logger: ['log', ...logLevelArray] },
+    { logger: filteredLogLevels },
   );
 
   app.use(requestIp.mw());
 
   app.useGlobalPipes(new ValidationPipe());
 
+  const secrets = app.get(AppSecretsService);
+
   app.enableCors({
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? 'https://blog.ordbokapi.org' // allow only the frontend in production
-        : '*', // allow all origins in development
+    origin: prod
+      ? secrets.frontendUrl // allow only the frontend in production
+      : '*', // allow all origins in development
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST'],
   });
+
+  app.enableShutdownHooks();
 
   await app.listen(port, '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
