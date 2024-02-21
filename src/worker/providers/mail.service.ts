@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, LogLevel, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { AppSecretsService } from '../../providers';
 import { WorkerExitCodes } from '../worker-exit-codes';
+import { format } from 'util';
 
 @Injectable()
 export class MailService {
@@ -11,6 +12,13 @@ export class MailService {
 
   constructor(private readonly secrets: AppSecretsService) {
     const mailerLogger = new Logger('nodemailer');
+
+    const logger =
+      (LogLevel: LogLevel) =>
+      (obj: unknown, message: string, ...args: unknown[]) => {
+        mailerLogger.verbose(obj);
+        mailerLogger[LogLevel](format(message, ...args));
+      };
 
     const options: SMTPTransport.Options = {
       host: this.secrets.mailHost,
@@ -26,13 +34,13 @@ export class MailService {
       },
       logger: {
         level() {},
-        trace: mailerLogger.verbose.bind(mailerLogger),
-        debug: mailerLogger.debug.bind(mailerLogger),
+        trace: logger('verbose'),
+        debug: logger('debug'),
         // the info logs from nodemailer are not so important so debug it is
-        info: mailerLogger.debug.bind(mailerLogger),
-        warn: mailerLogger.warn.bind(mailerLogger),
-        error: mailerLogger.error.bind(mailerLogger),
-        fatal: mailerLogger.fatal.bind(mailerLogger),
+        info: logger('debug'),
+        warn: logger('warn'),
+        error: logger('error'),
+        fatal: logger('fatal'),
       },
     };
 
