@@ -17,16 +17,22 @@ Handlebars.registerHelper('wrap', (text: string, width: number) => {
 Handlebars.registerHelper('concat', ((...args: (string | HelperOptions)[]) =>
   args.slice(0, -1).join('')) as HelperDelegate);
 
-export enum Template {
+/**
+ * The names of the available templates.
+ */
+export enum TemplateName {
   Verification = 'verification',
   SignedUp = 'signedUp',
   NewPost = 'newPost',
 }
 
+/**
+ * The data that templates need at render time.
+ */
 export type Templates = {
-  [Template.Verification]: { verificationUrl: string };
-  [Template.SignedUp]: { unsubscribeUrl: string };
-  [Template.NewPost]: {
+  [TemplateName.Verification]: { verificationUrl: string };
+  [TemplateName.SignedUp]: { unsubscribeUrl: string };
+  [TemplateName.NewPost]: {
     title: string;
     url: string;
     summary: string;
@@ -34,10 +40,30 @@ export type Templates = {
   };
 };
 
+/**
+ * The data for a template, i.e. the parameters that the template needs at
+ * render time.
+ */
+export type TemplateData<T extends TemplateName> = Templates[T];
+
+type CompiledHandlebarsTemplate<T extends TemplateName> =
+  Handlebars.TemplateDelegate<TemplateData<T>>;
+
+type CompiledTemplates = Record<
+  TemplateName,
+  {
+    text: CompiledHandlebarsTemplate<TemplateName>;
+    html: CompiledHandlebarsTemplate<TemplateName>;
+  }
+>;
+
+/**
+ * A service for rendering e-mail templates.
+ */
 @Injectable()
 export class TemplateService {
   #templates = Object.fromEntries(
-    Object.values(Template).map((template) => {
+    Object.values(TemplateName).map((template) => {
       const basename = kebabify(template);
       const html = readFileSync(`templates/${basename}.hbs`, 'utf8');
       const text = readFileSync(`templates/${basename}.text.hbs`, 'utf8');
@@ -50,20 +76,14 @@ export class TemplateService {
         },
       ];
     }),
-  ) as Record<
-    keyof Templates,
-    {
-      text: Handlebars.TemplateDelegate<Templates[keyof Templates]>;
-      html: Handlebars.TemplateDelegate<Templates[keyof Templates]>;
-    }
-  >;
+  ) as CompiledTemplates;
 
   /**
    * Renders a template.
    */
-  render<T extends keyof Templates>(
+  render<T extends TemplateName>(
     template: T,
-    data: Templates[T],
+    data: TemplateData<T>,
   ): [html: string, text: string] {
     return [
       this.#templates[template].html(data),

@@ -4,7 +4,7 @@ import {
   TemplateService,
   DataService,
   QueuedEmail,
-  Template,
+  TemplateName,
 } from '../../providers';
 import { MailService } from './mail.service';
 
@@ -89,7 +89,7 @@ export class MailerService {
    * Sends an email.
    * @param email The email to send.
    */
-  async sendEmail(email: QueuedEmail<Template>): Promise<void> {
+  async sendEmail(email: QueuedEmail<TemplateName>): Promise<void> {
     const succeeded: string[] = [];
     try {
       const { addresses, template, subject, params, needsUnsubscribeLink } =

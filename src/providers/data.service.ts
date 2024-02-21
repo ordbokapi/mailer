@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { createClient, RedisClientType } from 'redis';
 import { CryptoService } from './crypto.service';
 import { AppSecretsService } from './app-secrets.provider';
-import { Template, Templates } from './template.service';
+import { TemplateName, TemplateData } from './template.service';
 
 const enum RedisKeys {
   emailQueue = 'emailQueue',
@@ -10,14 +10,24 @@ const enum RedisKeys {
   emailByUnsubscribeToken = 'emailByUnsubscribeToken',
 }
 
-export interface Email<T extends Template> {
+/**
+ * The parameters for an email template as they are stored in Redis. The
+ * `unsubscribeUrl` parameter is not stored in Redis, as it is generated at
+ * render time.
+ */
+export type TemplateParams<T extends TemplateName> = Omit<
+  TemplateData<T>,
+  'unsubscribeUrl'
+>;
+
+export interface Email<T extends TemplateName> {
   template: T;
   subject: string;
-  params: Omit<Templates[T], 'unsubscribeUrl'>;
+  params: TemplateParams<T>;
   needsUnsubscribeLink?: boolean;
 }
 
-export interface QueuedEmail<T extends Template> extends Email<T> {
+export interface QueuedEmail<T extends TemplateName> extends Email<T> {
   addresses: string[];
 }
 
@@ -251,7 +261,7 @@ export class DataService {
    * back of the queue.
    * @param email The email to add to the queue.
    */
-  async queueEmail<T extends Template>(
+  async queueEmail<T extends TemplateName>(
     email: QueuedEmail<T> | Email<T>,
   ): Promise<void> {
     const queuedEmail: QueuedEmail<T> =
@@ -275,7 +285,7 @@ export class DataService {
    * @returns A promise that resolves to the email at the front of the queue, or
    * null if the queue is empty.
    */
-  async dequeueEmail(): Promise<QueuedEmail<Template> | null> {
+  async dequeueEmail(): Promise<QueuedEmail<TemplateName> | null> {
     const encryptedEmail = await this.client.lPop(RedisKeys.emailQueue);
 
     if (!encryptedEmail) {

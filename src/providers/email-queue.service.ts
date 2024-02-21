@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DataService } from './data.service';
-import { Template } from './template.service';
+import { DataService, TemplateParams } from './data.service';
+import { TemplateName } from './template.service';
 
 @Injectable()
 export class EmailQueueService {
@@ -16,7 +16,7 @@ export class EmailQueueService {
         verificationUrl: `https://blog.ordbokapi.org/verify?token=${data.token}`,
       },
       subject: 'Ordbok API Utviklingsblogg: Stadfest e-postadressa di',
-      template: Template.Verification,
+      template: TemplateName.Verification,
     });
   }
 
@@ -25,24 +25,18 @@ export class EmailQueueService {
       addresses: [data.email],
       params: {},
       subject: 'Ordbok API Utviklingsblogg: Velkomen!',
-      template: Template.SignedUp,
+      template: TemplateName.SignedUp,
       needsUnsubscribeLink: true,
     });
   }
 
-  async queueNewPostEmail(data: {
-    title: string;
-    url: string;
-    summary: string;
-  }): Promise<void> {
+  async queueNewPostEmail(
+    data: TemplateParams<TemplateName.NewPost>,
+  ): Promise<void> {
     await this.data.queueEmail({
-      params: {
-        title: data.title,
-        url: data.url,
-        summary: data.summary,
-      },
+      params: data,
       subject: `Ordbok API Utviklingsblogg: Ny bloggpost: ${data.title}`,
-      template: Template.NewPost,
+      template: TemplateName.NewPost,
       needsUnsubscribeLink: true,
     });
   }
