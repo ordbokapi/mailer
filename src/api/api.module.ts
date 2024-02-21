@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import * as controllers from './controllers';
-import * as providers from './providers';
+import * as controllers from '../controllers';
+import * as providers from '../providers';
 import { RequestLoggerMiddleware } from './request-logger.middleware';
-import { NestClassCollection } from './utils';
+import { NestClassCollection } from '../utils';
 
 @Module({
   imports: [],
@@ -13,7 +13,7 @@ import { NestClassCollection } from './utils';
     .forEnvironment()
     .toArray(),
 })
-export class AppModule {
+export class ApiModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(RequestLoggerMiddleware).forRoutes('*');
   }

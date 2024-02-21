@@ -6,7 +6,6 @@ import { NestClassCollection } from '../utils';
 @Module({
   imports: [],
   providers: NestClassCollection.fromInjectables(providers)
-    .except(providers.WorkerService)
     .concat(NestClassCollection.fromInjectables(workerProviders))
     .toArray(),
 })
