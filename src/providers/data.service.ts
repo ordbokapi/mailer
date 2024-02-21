@@ -50,12 +50,7 @@ export class DataService {
     appSecrets: AppSecretsService,
     private readonly cryptoService: CryptoService,
   ) {
-    this.client = createClient({
-      socket: {
-        host: appSecrets.redisHost,
-        port: appSecrets.redisPort,
-      },
-    });
+    this.client = createClient({ url: appSecrets.redisUrl });
 
     this.client
       .connect()

@@ -40,8 +40,7 @@ export class AppSecretsService {
   public readonly recordIV: string;
   public readonly recordSalt: string;
 
-  public readonly redisHost: string;
-  public readonly redisPort: number;
+  public readonly redisUrl: string;
 
   public readonly baseUrl: string;
   public readonly frontendUrl: string;
@@ -63,8 +62,7 @@ export class AppSecretsService {
       recordIV: getEnv('recordIV'),
       recordSalt: getEnv('recordSalt'),
 
-      redisHost: getEnv('redisHost'),
-      redisPort: getEnvInt('redisPort', 6379),
+      redisUrl: getEnv('redisUrl', process.env.REDISCLOUD_URL),
 
       baseUrl: getEnv('baseUrl'),
       frontendUrl: getEnv('frontendUrl'),

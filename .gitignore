@@ -50,5 +50,6 @@ lerna-debug.log*
 
 # Misc
 secrets.json
+secrets*.json
 .redis
 .env
