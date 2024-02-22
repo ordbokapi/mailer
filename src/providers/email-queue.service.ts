@@ -39,7 +39,7 @@ export class EmailQueueService {
   ): Promise<void> {
     await this.data.queueEmail({
       params: data,
-      subject: `Ordbok API Utviklingsblogg: Ny bloggpost: ${data.title}`,
+      subject: `Ordbok API Utviklingsblogg: Nytt innlegg: ${data.title}`,
       template: TemplateName.NewPost,
       needsUnsubscribeLink: true,
     });
