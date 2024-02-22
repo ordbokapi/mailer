@@ -5,6 +5,7 @@ import {
   DataService,
   QueuedEmail,
   TemplateName,
+  AppSecretsService,
 } from '../../providers';
 import { MailService } from './mail.service';
 
@@ -14,6 +15,7 @@ export class MailerService {
     @Inject(MailService) private readonly mailService: MailService,
     @Inject(TemplateService) private readonly templateService: TemplateService,
     @Inject(DataService) private readonly dataService: DataService,
+    @Inject(AppSecretsService) private readonly secrets: AppSecretsService,
   ) {}
 
   #logger = new Logger(MailerService.name);
@@ -122,7 +124,7 @@ export class MailerService {
             (needsUnsubscribeLink
               ? {
                   ...params,
-                  unsubscribeUrl: `https://blog.ordbokapi.org/unsubscribe?token=${unsubscribeToken}`,
+                  unsubscribeUrl: `${this.secrets.frontendUrl}/unsubscribe/?token=${unsubscribeToken}`,
                 }
               : params) as any,
           );
@@ -134,7 +136,7 @@ export class MailerService {
               text,
               html,
               autoUnsubscribeUrl: needsUnsubscribeLink
-                ? `https://blog-api.ordbokapi.org/unsubscribe?token=${unsubscribeToken}`
+                ? `${this.secrets.baseUrl}/unsubscribe?token=${unsubscribeToken}`
                 : undefined,
             });
 
