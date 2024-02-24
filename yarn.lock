@@ -1985,12 +1985,12 @@ __metadata:
   linkType: hard
 
 "address-rfc2821@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "address-rfc2821@npm:2.1.1"
+  version: 2.1.2
+  resolution: "address-rfc2821@npm:2.1.2"
   dependencies:
     nearley: "npm:^2.20.1"
-    punycode: "npm:^2.3.0"
-  checksum: 10c0/2af69b22183d162ef36b2e1bb436e69b5e5c98c0967419312ddd5d8967a17e2d3842474be01b623e9d5c9e889274424a1d207a755ab1cd563f2c75a6b3ddb456
+    punycode: "npm:^2.3.1"
+  checksum: 10c0/01f720a973c18b73f1fcc69d99ee4ead32cad143a38616a0a8f4de16932ff0969a8fda20b70e286bec5ce7249cf6f0695625046be61a36719b0527663fcae47c
   languageName: node
   linkType: hard
 
@@ -6279,7 +6279,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:^2.1.0, punycode@npm:^2.3.0":
+"punycode@npm:^2.1.0, punycode@npm:^2.3.1":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
   checksum: 10c0/14f76a8206bc3464f794fb2e3d3cc665ae416c01893ad7a02b23766eb07159144ee612ad67af5e84fa4479ccfe67678c4feb126b0485651b302babf66f04f9e9
