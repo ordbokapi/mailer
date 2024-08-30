@@ -91,7 +91,7 @@
   },
   "packageManager": "yarn@4.4.1",
   "volta": {
-    "node": "22.5.1",
+    "node": "22.7.0",
     "yarn": "4.4.1"
   },
   "engines": {
