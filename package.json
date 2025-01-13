@@ -54,7 +54,7 @@
     "@nestjs/testing": "^10.3.10",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.11",
+    "@types/node": "^22.0.0",
     "@types/nodemailer": "^6.4.15",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
@@ -91,7 +91,7 @@
   },
   "packageManager": "yarn@4.6.0",
   "volta": {
-    "node": "22.9.0",
+    "node": "22.13.0",
     "yarn": "4.6.0"
   },
   "engines": {
