@@ -78,6 +78,6 @@ export class SanitizationService {
     const sanitized =
       trimmed.slice(0, maxLength).match(allowedCharacters)?.join('') ?? '';
 
-    return sanitized;
+    return sanitized.trim();
   }
 }

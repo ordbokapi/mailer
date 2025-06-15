@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { createClient, RedisClientType } from 'redis';
 import { CryptoService } from './crypto.service';
 import { AppSecretsService } from './app-secrets.provider';
@@ -49,33 +49,37 @@ export class DataService {
   constructor(
     appSecrets: AppSecretsService,
     private readonly cryptoService: CryptoService,
+    @Optional() client?: RedisClientType,
   ) {
-    this.client = createClient({ url: appSecrets.redisUrl });
-
-    this.client
-      .connect()
-      .then(() => {
-        // log errors
-        this.client.on('error', (err) => {
-          this.#logger.error(`Redis error: ${err?.message || err?.code}`);
+    if (client) {
+      this.client = client;
+    } else {
+      this.client = createClient({ url: appSecrets.redisUrl });
+      this.client
+        .connect()
+        .then(() => {
+          // log errors
+          this.client.on('error', (err) => {
+            this.#logger.error(`Redis error: ${err?.message || err?.code}`);
+          });
+        })
+        .catch((err) => {
+          this.#logger.fatal(
+            `Failed to connect to Redis: ${err?.message || err?.code}`,
+          );
+          setTimeout(() => process.exit(1), 1000);
         });
-      })
-      .catch((err) => {
-        this.#logger.fatal(
-          `Failed to connect to Redis: ${err?.message || err?.code}`,
-        );
-        setTimeout(() => process.exit(1), 1000);
+
+      // log reconnections
+      this.client.on('reconnecting', () => {
+        this.#logger.debug('Reconnecting to Redis...');
       });
 
-    // log reconnections
-    this.client.on('reconnecting', () => {
-      this.#logger.debug('Reconnecting to Redis...');
-    });
-
-    // log successful connections
-    this.client.on('connect', () => {
-      this.#logger.log('Connected to Redis');
-    });
+      // log successful connections
+      this.client.on('connect', () => {
+        this.#logger.log('Connected to Redis');
+      });
+    }
   }
 
   /*
@@ -162,19 +166,16 @@ export class DataService {
    * subscriber was successfully removed.
    */
   async removeSubscriberByToken(unsubscribeToken: string): Promise<boolean> {
-    const email = await this.client.hGet(
+    const encryptedEmail = await this.client.hGet(
       RedisKeys.emailByUnsubscribeToken,
       this.cryptoService.encrypt(unsubscribeToken),
     );
 
-    if (!email) {
+    if (!encryptedEmail) {
       return false;
     }
 
-    await this.client.hDel(
-      RedisKeys.unsubscribeTokensByEmail,
-      this.cryptoService.encrypt(email),
-    );
+    await this.client.hDel(RedisKeys.unsubscribeTokensByEmail, encryptedEmail);
     await this.client.hDel(
       RedisKeys.emailByUnsubscribeToken,
       this.cryptoService.encrypt(unsubscribeToken),
