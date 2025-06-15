@@ -190,9 +190,11 @@ export class DataService {
    * subscriber is subscribed.
    */
   async isSubscribed(email: string): Promise<boolean> {
-    return await this.client.hExists(
-      RedisKeys.unsubscribeTokensByEmail,
-      this.cryptoService.encrypt(email),
+    return Boolean(
+      await this.client.hExists(
+        RedisKeys.unsubscribeTokensByEmail,
+        this.cryptoService.encrypt(email),
+      ),
     );
   }
 
