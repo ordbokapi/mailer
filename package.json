@@ -32,10 +32,10 @@
     "heroku:config": "node secrets-to-heroku-commands.mjs"
   },
   "dependencies": {
-    "@nestjs/common": "^10.3.10",
-    "@nestjs/core": "^10.3.10",
-    "@nestjs/platform-express": "^10.3.10",
-    "@nestjs/platform-fastify": "^10.3.10",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/platform-fastify": "^11.0.0",
     "@types/request-ip": "^0.0.41",
     "address-rfc2821": "^2.1.2",
     "class-transformer": "^0.5.1",
@@ -49,9 +49,9 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.4.2",
-    "@nestjs/schematics": "^10.1.2",
-    "@nestjs/testing": "^10.3.10",
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.0.0",
