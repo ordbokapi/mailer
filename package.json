@@ -43,7 +43,7 @@
     "fastify": "^5.0.0",
     "handlebars": "^4.7.8",
     "nodemailer": "^7.0.0",
-    "redis": "^4.6.15",
+    "redis": "^5.0.0",
     "reflect-metadata": "^0.2.2",
     "request-ip": "^3.3.0",
     "rxjs": "^7.8.1"
