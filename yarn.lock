@@ -6488,7 +6488,7 @@ __metadata:
     handlebars: "npm:^4.7.8"
     jest: "npm:^30.0.0"
     jest-util: "npm:^30.0.0"
-    nodemailer: "npm:^6.9.14"
+    nodemailer: "npm:^7.0.0"
     prettier: "npm:^3.3.3"
     redis: "npm:^4.6.15"
     reflect-metadata: "npm:^0.2.2"
@@ -6991,10 +6991,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.9.14":
-  version: 6.10.1
-  resolution: "nodemailer@npm:6.10.1"
-  checksum: 10c0/e81fde258ea4f4e5646e9e3eebe89294d007939999d2d1a8c96c5488fa00bf659e46cf76fccb2697e9aa6ef9807a1ed47ff2aef6ad30b795e3849b6997066d16
+"nodemailer@npm:^7.0.0":
+  version: 7.0.3
+  resolution: "nodemailer@npm:7.0.3"
+  checksum: 10c0/835492262328471b94a080cea43ea20f4232e19a915400cd71c7f4f4ab93a7d361775154eebe30a8fc40379eecf11a0bbc73e6cf4bbee9dccb6dd1cf7a1dc792
   languageName: node
   linkType: hard
 
