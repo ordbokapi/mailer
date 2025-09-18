@@ -93,10 +93,10 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-  "packageManager": "yarn@4.10.1",
+  "packageManager": "yarn@4.10.2",
   "volta": {
     "node": "22.19.0",
-    "yarn": "4.10.1"
+    "yarn": "4.10.2"
   },
   "engines": {
     "node": ">=22.5.1",
