@@ -4103,12 +4103,12 @@ __metadata:
   linkType: hard
 
 "address-rfc2821@npm:^2.1.2":
-  version: 2.1.3
-  resolution: "address-rfc2821@npm:2.1.3"
+  version: 2.1.4
+  resolution: "address-rfc2821@npm:2.1.4"
   dependencies:
     nearley: "npm:^2.20.1"
     punycode: "npm:^2.3.1"
-  checksum: 10c0/c20212d065ef2a3ae00f8370df0e24346b5f5878f5955d63f84d53d24bb86fb62ce3395c501b4b16b503a327486949a004a6730828a411c1893fac139471b7e5
+  checksum: 10c0/5242bb7a053d4870d7aa757c8a3449ca8d8a0b9d07d6144253b3d2055ec17685e553a8ef68a59acba4b53123320e10f0672ec3a3affca34f5e7df01ca9d96c1c
   languageName: node
   linkType: hard
 
