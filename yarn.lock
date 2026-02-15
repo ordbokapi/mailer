@@ -2484,12 +2484,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:^6.4.15":
-  version: 6.4.22
-  resolution: "@types/nodemailer@npm:6.4.22"
+"@types/nodemailer@npm:^7.0.0":
+  version: 7.0.10
+  resolution: "@types/nodemailer@npm:7.0.10"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10c0/0f4519ad48f507ed0d047f15ea5665da8f5e60463a0abfbab1a0f646e1884a282b6c2924954e482b7cd8ec1e4cbf5fa318d66cb5d8b1f0a98267d9571710708d
+  checksum: 10c0/14e4389a71a154cad898c6ad21fbf12309f86fa504c6d11bf0911190697164f1c3b0c0d9f6cb425c189af73137cc49eb10dbb41574174bf822cfe37755b87c03
   languageName: node
   linkType: hard
 
@@ -6567,7 +6567,7 @@ __metadata:
     "@types/express": "npm:^5.0.0"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^22.0.0"
-    "@types/nodemailer": "npm:^6.4.15"
+    "@types/nodemailer": "npm:^7.0.0"
     "@types/request-ip": "npm:^0.0.41"
     "@types/supertest": "npm:^6.0.2"
     "@typescript-eslint/eslint-plugin": "npm:^8.0.0"
