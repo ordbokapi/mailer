@@ -37,7 +37,7 @@ export class EmailQueueService {
       params: {
         verificationUrl: `${this.secrets.frontendUrl}/verify/?token=${data.token}`,
       },
-      subject: 'Ordbok API Utviklingsblogg: Stadfest e-postadressa di',
+      subject: 'Ordbok-API-utviklingsblogg: Stadfest e-postadressa di',
       template: TemplateName.Verification,
     });
   }
@@ -46,7 +46,7 @@ export class EmailQueueService {
     await this.data.queueEmail({
       addresses: [data.email],
       params: {},
-      subject: 'Ordbok API Utviklingsblogg: Velkomen!',
+      subject: 'Ordbok-API-utviklingsblogg: Velkomen!',
       template: TemplateName.SignedUp,
       needsUnsubscribeLink: true,
     });
@@ -57,7 +57,7 @@ export class EmailQueueService {
   ): Promise<void> {
     await this.data.queueEmail({
       params: data,
-      subject: `Ordbok API Utviklingsblogg: Nytt innlegg: ${data.title}`,
+      subject: `Ordbok-API-utviklingsblogg: Nytt innlegg: ${data.title}`,
       template: TemplateName.NewPost,
       needsUnsubscribeLink: true,
     });
