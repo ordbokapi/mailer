@@ -8,7 +8,7 @@
       "automerge": true
     },
     {
-      "matchDepNames": ["node.js"],
+      "matchDepNames": ["node.js", "node"],
       "automerge": false
     }
   ]
