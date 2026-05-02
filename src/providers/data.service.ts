@@ -100,6 +100,21 @@ export class DataService {
     }
   }
 
+  /**
+   * Returns whether the Redis client is connected and responsive.
+   */
+  async isHealthy(): Promise<boolean> {
+    try {
+      if (!this.client.isReady) {
+        return false;
+      }
+      await this.client.ping();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   /*
     Keys are stored as such:
 

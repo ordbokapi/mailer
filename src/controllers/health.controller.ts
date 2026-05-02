@@ -16,17 +16,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
-import { Module } from '@nestjs/common';
-import { HealthController } from '../controllers/health.controller';
-import * as providers from '../providers';
-import * as workerProviders from './providers';
-import { NestClassCollection } from '../utils';
+import { Controller, Get, ServiceUnavailableException } from '@nestjs/common';
+import { DataService } from '../providers';
 
-@Module({
-  imports: [],
-  controllers: [HealthController],
-  providers: NestClassCollection.fromInjectables(providers)
-    .concat(NestClassCollection.fromInjectables(workerProviders))
-    .toArray(),
-})
-export class WorkerModule {}
+@Controller('health')
+export class HealthController {
+  constructor(private readonly dataService: DataService) {}
+
+  @Get()
+  async check(): Promise<{ status: string }> {
+    if (!(await this.dataService.isHealthy())) {
+      throw new ServiceUnavailableException({ status: 'error' });
+    }
+
+    return { status: 'ok' };
+  }
+}

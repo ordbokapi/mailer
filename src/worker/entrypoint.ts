@@ -19,11 +19,26 @@
 import { NestFactory } from '@nestjs/core';
 import { WorkerModule } from './worker.module';
 import { LogLevel } from '@nestjs/common';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
-export async function start({ logLevels }: { logLevels: LogLevel[] }) {
-  const app = await NestFactory.createApplicationContext(WorkerModule, {
-    logger: logLevels,
-  });
+export async function start({
+  logLevels,
+  port,
+}: {
+  logLevels: LogLevel[];
+  port: number;
+}) {
+  const app = await NestFactory.create<NestFastifyApplication>(
+    WorkerModule,
+    new FastifyAdapter(),
+    { logger: logLevels },
+  );
 
   app.enableShutdownHooks();
+
+  await app.listen(port, '0.0.0.0');
+  console.log(`Worker is running on: ${await app.getUrl()}`);
 }

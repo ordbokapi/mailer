@@ -127,7 +127,7 @@ async function main() {
       : 3000;
 
   if (process.argv.includes('--worker')) {
-    startWorker({ logLevels: logLevelArray });
+    startWorker({ port, logLevels: logLevelArray });
   } else {
     startApi({ port, logLevels: logLevelArray });
   }

@@ -17,6 +17,7 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 export * from './app.controller';
+export * from './health.controller';
 export * from './notify.controller';
 export * from './preview.controller';
 export * from './subscription.controller';
