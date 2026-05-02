@@ -18,6 +18,7 @@
 
 export * from './dev-only';
 export * from './envify';
+export * from './get-env';
 export * from './is-prod';
 export * from './kebabify';
 export * from './nest-class-collection';

@@ -19,7 +19,7 @@
 import { Injectable, LogLevel, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { AppSecretsService } from '../../providers';
+import { MailSecretsService } from './mail-secrets.service';
 import { WorkerExitCodes } from '../worker-exit-codes';
 import { format } from 'util';
 
@@ -28,7 +28,7 @@ export class MailService {
   #transporter: nodemailer.Transporter;
   #logger: Logger = new Logger(MailService.name);
 
-  constructor(private readonly secrets: AppSecretsService) {
+  constructor(private readonly secrets: MailSecretsService) {
     const mailerLogger = new Logger('nodemailer');
 
     const logger =

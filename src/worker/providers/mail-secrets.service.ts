@@ -17,36 +17,29 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 import { Injectable } from '@nestjs/common';
-import { getEnv, loadSecrets } from '../utils';
+import { getEnv, getEnvBool, getEnvInt, loadSecrets } from '../../utils';
 
 @Injectable()
-export class AppSecretsService {
-  public readonly apiKey!: string;
-
-  public readonly recordKey!: string;
-  public readonly recordIV!: string;
-  public readonly recordSalt!: string;
-
-  public readonly redisUrl!: string;
-
-  public readonly baseUrl!: string;
-  public readonly frontendUrl!: string;
+export class MailSecretsService {
+  public readonly mailHost!: string;
+  public readonly mailPort!: number;
+  public readonly mailRequireTLS!: boolean;
+  public readonly mailSecure!: boolean;
+  public readonly mailUser!: string;
+  public readonly mailPass!: string;
+  public readonly mailFrom!: string;
+  public readonly mailAcceptUnauthorized!: boolean;
 
   constructor() {
     loadSecrets(this, {
-      apiKey: getEnv('apiKey'),
-
-      recordKey: getEnv('recordKey'),
-      recordIV: getEnv('recordIV'),
-      recordSalt: getEnv('recordSalt'),
-
-      redisUrl: getEnv(
-        'redisUrl',
-        process.env.REDIS_URL || process.env.REDISCLOUD_URL,
-      ),
-
-      baseUrl: getEnv('baseUrl'),
-      frontendUrl: getEnv('frontendUrl'),
+      mailHost: getEnv('mailHost'),
+      mailPort: getEnvInt('mailPort'),
+      mailRequireTLS: getEnvBool('mailRequireTLS', true),
+      mailSecure: getEnvBool('mailSecure', true),
+      mailUser: getEnv('mailUser'),
+      mailPass: getEnv('mailPass'),
+      mailFrom: getEnv('mailFrom'),
+      mailAcceptUnauthorized: getEnvBool('mailAcceptUnauthorized', false),
     });
   }
 }

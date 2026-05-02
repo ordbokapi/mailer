@@ -17,4 +17,5 @@
 // along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
 
 export * from './mail.service';
+export * from './mail-secrets.service';
 export * from './mailer.service';
