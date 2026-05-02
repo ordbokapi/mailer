@@ -80,7 +80,10 @@ export class AppSecretsService {
       recordIV: getEnv('recordIV'),
       recordSalt: getEnv('recordSalt'),
 
-      redisUrl: getEnv('redisUrl', process.env.REDISCLOUD_URL),
+      redisUrl: getEnv(
+        'redisUrl',
+        process.env.REDIS_URL || process.env.REDISCLOUD_URL,
+      ),
 
       baseUrl: getEnv('baseUrl'),
       frontendUrl: getEnv('frontendUrl'),
