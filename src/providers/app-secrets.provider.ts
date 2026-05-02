@@ -1,3 +1,21 @@
+// SPDX-FileCopyrightText: Copyright (C) 2024 Adaline Simonian
+// SPDX-License-Identifier: AGPL-3.0-or-later
+//
+// This file is part of Ordbok API.
+//
+// Ordbok API is free software: you can redistribute it and/or modify it under
+// the terms of the GNU Affero General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option) any
+// later version.
+//
+// Ordbok API is distributed in the hope that it will be useful, but WITHOUT ANY
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+// A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+// details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Ordbok API. If not, see <https://www.gnu.org/licenses/>.
+
 import { Injectable } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { envify } from '../utils';
@@ -25,25 +43,25 @@ const getEnvInt = (
 
 @Injectable()
 export class AppSecretsService {
-  public readonly apiKey: string;
+  public readonly apiKey!: string;
 
-  public readonly mailHost: string;
-  public readonly mailPort: number;
-  public readonly mailRequireTLS: boolean;
-  public readonly mailSecure: boolean;
-  public readonly mailUser: string;
-  public readonly mailPass: string;
-  public readonly mailFrom: string;
-  public readonly mailAcceptUnauthorized: boolean;
+  public readonly mailHost!: string;
+  public readonly mailPort!: number;
+  public readonly mailRequireTLS!: boolean;
+  public readonly mailSecure!: boolean;
+  public readonly mailUser!: string;
+  public readonly mailPass!: string;
+  public readonly mailFrom!: string;
+  public readonly mailAcceptUnauthorized!: boolean;
 
-  public readonly recordKey: string;
-  public readonly recordIV: string;
-  public readonly recordSalt: string;
+  public readonly recordKey!: string;
+  public readonly recordIV!: string;
+  public readonly recordSalt!: string;
 
-  public readonly redisUrl: string;
+  public readonly redisUrl!: string;
 
-  public readonly baseUrl: string;
-  public readonly frontendUrl: string;
+  public readonly baseUrl!: string;
+  public readonly frontendUrl!: string;
 
   constructor() {
     const secrets: Partial<AppSecretsService> = {
@@ -73,8 +91,11 @@ export class AppSecretsService {
       const json = JSON.parse(file);
 
       Object.assign(secrets, json);
-    } catch (error) {
-      if (error.code !== 'ENOENT') {
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        (error as NodeJS.ErrnoException).code !== 'ENOENT'
+      ) {
         throw error;
       }
     }
