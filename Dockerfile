@@ -19,7 +19,7 @@
 # -----------------------------------------
 # Build stage
 # -----------------------------------------
-FROM node:24.14.1-slim AS builder
+FROM node:24.15.0-slim AS builder
 
 WORKDIR /app
 
@@ -39,7 +39,7 @@ RUN yarn build
 # -----------------------------------------
 # Run stage
 # -----------------------------------------
-FROM node:24.14.1-slim
+FROM node:24.15.0-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
