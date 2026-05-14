@@ -2146,12 +2146,12 @@ __metadata:
   linkType: hard
 
 "address-rfc2821@npm:^2.1.5":
-  version: 2.1.5
-  resolution: "address-rfc2821@npm:2.1.5"
+  version: 2.2.0
+  resolution: "address-rfc2821@npm:2.2.0"
   dependencies:
     nearley: "npm:^2.20.1"
     punycode: "npm:^2.3.1"
-  checksum: 10c0/f49b8c96a21e5553c09eb36f87881cf9964e238ab40d3782c5ddcbda6e7d770e686bd4cfba5938f50d07db141a0a62406801ed8cabdea6af179de77c9f53f341
+  checksum: 10c0/0202eec36686663a16865564c87e88b80101211d2a5f8d5b008d6260396c5469fa3b062d2f5bb08bb57bfc5ade61d3995946daded9aeddfe23a8c31806096e97
   languageName: node
   linkType: hard
 
