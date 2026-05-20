@@ -37,9 +37,9 @@ export class TestController {
         'Lorem ipsum dolor sit amet, consectetur adipisici-elite',
       ]),
       url: pickRandom([
-        `${this.secrets.frontendUrl}/post/62438/lorem-ipsum`,
-        `${this.secrets.frontendUrl}/post/71702/excepteur-sint`,
-        `${this.secrets.frontendUrl}/post/81920/duis-aute-irure`,
+        `${this.secrets.frontendUrl}/blogg/2024/02/24/lorem-ipsum/`,
+        `${this.secrets.frontendUrl}/blogg/2024/05/12/excepteur-sint/`,
+        `${this.secrets.frontendUrl}/blogg/2024/08/03/duis-aute-irure/`,
       ]),
       summary: pickRandom([
         'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',

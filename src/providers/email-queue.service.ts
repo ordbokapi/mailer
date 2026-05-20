@@ -35,7 +35,7 @@ export class EmailQueueService {
     await this.data.queueEmail({
       addresses: [data.email],
       params: {
-        verificationUrl: `${this.secrets.frontendUrl}/verify/?token=${data.token}`,
+        verificationUrl: `${this.secrets.frontendUrl}/blogg/stadfest/?token=${data.token}`,
       },
       subject: 'Ordbok-API-utviklingsblogg: Stadfest e-postadressa di',
       template: TemplateName.Verification,

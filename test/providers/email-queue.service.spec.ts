@@ -49,7 +49,9 @@ describe('EmailQueueService', () => {
 
     expect(dataService.queueEmail).toHaveBeenCalledWith({
       addresses: ['user@test.com'],
-      params: { verificationUrl: 'https://example.com/verify/?token=tok123' },
+      params: {
+        verificationUrl: 'https://example.com/blogg/stadfest/?token=tok123',
+      },
       subject: expect.stringContaining('Stadfest'),
       template: TemplateName.Verification,
     });

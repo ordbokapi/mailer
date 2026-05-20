@@ -53,7 +53,7 @@ describe('NotifyController (e2e)', () => {
         sanitizeUrl: vi.fn((s: string) => s),
       })
       .overrideProvider(AppSecretsService)
-      .useValue({ apiKey, frontendUrl: 'https://blog.ordbokapi.org' })
+      .useValue({ apiKey, frontendUrl: 'https://ordbokapi.org' })
       .overrideGuard(ThrottlerBehindProxyGuard)
       .useValue({ canActivate: () => true })
       .compile();

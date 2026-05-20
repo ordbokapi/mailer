@@ -142,7 +142,7 @@ export class MailerService {
             (needsUnsubscribeLink
               ? {
                   ...params,
-                  unsubscribeUrl: `${this.secrets.frontendUrl}/unsubscribe/?token=${unsubscribeToken}`,
+                  unsubscribeUrl: `${this.secrets.frontendUrl}/blogg/avslutt/?token=${unsubscribeToken}`,
                 }
               : params) as any,
           );
