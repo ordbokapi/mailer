@@ -1050,8 +1050,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/common@npm:^11.1.19":
-  version: 11.1.27
-  resolution: "@nestjs/common@npm:11.1.27"
+  version: 11.1.28
+  resolution: "@nestjs/common@npm:11.1.28"
   dependencies:
     file-type: "npm:21.3.4"
     iterare: "npm:1.2.1"
@@ -1068,13 +1068,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/c8c9c4ae913f302d76007ad9488c2dbf895df48373f3d9a475e7444232bd2b0d2d499557548fec48b3c38c399422456a475f8e23f79b14f3e7e46f8866d97ec0
+  checksum: 10c0/aaf9a773fd8523972c5f971e77b9809ebd6fab682a4b791599927b546501e17909947e68a2f97cf6d7a28ebef409765c8453f9ce45a61410e0fbdba58d3733bb
   languageName: node
   linkType: hard
 
 "@nestjs/core@npm:^11.1.19":
-  version: 11.1.27
-  resolution: "@nestjs/core@npm:11.1.27"
+  version: 11.1.28
+  resolution: "@nestjs/core@npm:11.1.28"
   dependencies:
     fast-safe-stringify: "npm:2.1.1"
     iterare: "npm:1.2.1"
@@ -1095,34 +1095,34 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/ac70ec5777bd93db85ba640dd952e8fd903162a71aa35f3aac99e33b1f5d87f17a317861dd7c060ee739c6252f38745a6991c713e15ca3cd354e27b036ad1e2d
+  checksum: 10c0/691e4328fc7b428beb1cfe47fe5342f2abbf6cfb2bfb3fd76b0430cf7732b59f520c7599bbab2186c734f8be7b4abcdd805c0c846a337a65f822f547d5714fda
   languageName: node
   linkType: hard
 
 "@nestjs/platform-express@npm:^11.1.19":
-  version: 11.1.27
-  resolution: "@nestjs/platform-express@npm:11.1.27"
+  version: 11.1.28
+  resolution: "@nestjs/platform-express@npm:11.1.28"
   dependencies:
     cors: "npm:2.8.6"
     express: "npm:5.2.1"
-    multer: "npm:2.1.1"
+    multer: "npm:2.2.0"
     path-to-regexp: "npm:8.4.2"
     tslib: "npm:2.8.1"
   peerDependencies:
     "@nestjs/common": ^11.0.0
     "@nestjs/core": ^11.0.0
-  checksum: 10c0/81c14e49fd00fbbd8fc20250851b574a1c22a5d2af025c23655b295f013b2a6ebc166f4845bc89b765b7968f0727731bcd99fa9e7ff7b50265e282ddf8953fc0
+  checksum: 10c0/7063a2f33695a35776a4c5a4a3663b65c450779cdefe3302899d97ca79dbd20c6f2f3b4a8f6de9f633c73855d152e2eb6487bac975593a65e0513ca23a0a73a1
   languageName: node
   linkType: hard
 
 "@nestjs/platform-fastify@npm:^11.1.19":
-  version: 11.1.27
-  resolution: "@nestjs/platform-fastify@npm:11.1.27"
+  version: 11.1.28
+  resolution: "@nestjs/platform-fastify@npm:11.1.28"
   dependencies:
     "@fastify/cors": "npm:11.2.0"
     "@fastify/formbody": "npm:8.0.2"
     fast-querystring: "npm:1.1.2"
-    fastify: "npm:5.8.5"
+    fastify: "npm:5.10.0"
     fastify-plugin: "npm:6.0.0"
     find-my-way: "npm:9.6.0"
     light-my-request: "npm:6.6.0"
@@ -1139,7 +1139,7 @@ __metadata:
       optional: true
     "@fastify/view":
       optional: true
-  checksum: 10c0/aa668879f0d70c32a1291cc9bd3b3d798eaf62183660c0ea612371615684637baa54716460c2480bc542d3dc13c6a0e33269d45f496910ba304777bb0da82790
+  checksum: 10c0/1b7fb35ee717f727da4f9ee4b76a810389381f07b9646a779a929dc72775adf51d69dbbae52fd1e5e341430df63eae4577ad059cf9d56b786c2339cf11276243
   languageName: node
   linkType: hard
 
@@ -1178,8 +1178,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/testing@npm:^11.1.19":
-  version: 11.1.27
-  resolution: "@nestjs/testing@npm:11.1.27"
+  version: 11.1.28
+  resolution: "@nestjs/testing@npm:11.1.28"
   dependencies:
     tslib: "npm:2.8.1"
   peerDependencies:
@@ -1192,7 +1192,7 @@ __metadata:
       optional: true
     "@nestjs/platform-express":
       optional: true
-  checksum: 10c0/28a8b082ac447d4e808d0e1bc5289da416f4269f6af68eedf9c5004873e56f8e7a7cb738350c144399b6c2a0ffc73a4c99c6c2a4c82b968047569f316b08a3bc
+  checksum: 10c0/7d111a40cceb57b492610caa6cf875debe8a010083765f5bc10c3943c4f6ff7c2f15afb55fcbcd4e329f68b9c646f68a6d0caa319ab1b3b31f08a833f30e233a
   languageName: node
   linkType: hard
 
@@ -3556,30 +3556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:5.8.5":
-  version: 5.8.5
-  resolution: "fastify@npm:5.8.5"
-  dependencies:
-    "@fastify/ajv-compiler": "npm:^4.0.5"
-    "@fastify/error": "npm:^4.0.0"
-    "@fastify/fast-json-stringify-compiler": "npm:^5.0.0"
-    "@fastify/proxy-addr": "npm:^5.0.0"
-    abstract-logging: "npm:^2.0.1"
-    avvio: "npm:^9.0.0"
-    fast-json-stringify: "npm:^6.0.0"
-    find-my-way: "npm:^9.0.0"
-    light-my-request: "npm:^6.0.0"
-    pino: "npm:^9.14.0 || ^10.1.0"
-    process-warning: "npm:^5.0.0"
-    rfdc: "npm:^1.3.1"
-    secure-json-parse: "npm:^4.0.0"
-    semver: "npm:^7.6.0"
-    toad-cache: "npm:^3.7.0"
-  checksum: 10c0/c12fb6cec8e9083d148edc49c99f75e518e28c1664b121085fc1392dc67cd2e132d21dd79e1ef37e1c77c5991b4854ac8850b8d5997691060ea4c13fb7421a0e
-  languageName: node
-  linkType: hard
-
-"fastify@npm:^5.8.5":
+"fastify@npm:5.10.0, fastify@npm:^5.8.5":
   version: 5.10.0
   resolution: "fastify@npm:5.10.0"
   dependencies:
@@ -3666,17 +3643,6 @@ __metadata:
     fast-querystring: "npm:^1.0.0"
     safe-regex2: "npm:^5.0.0"
   checksum: 10c0/d103e51a1e73e202e7533b2efc42e40c3618f8bd24a37cfa140da5e079c2baf5d5baeb01b2b8a7c104d680aa09c4b716851184f8ae103be374e8f46b17f6608d
-  languageName: node
-  linkType: hard
-
-"find-my-way@npm:^9.0.0":
-  version: 9.0.1
-  resolution: "find-my-way@npm:9.0.1"
-  dependencies:
-    fast-deep-equal: "npm:^3.1.3"
-    fast-querystring: "npm:^1.0.0"
-    safe-regex2: "npm:^4.0.0"
-  checksum: 10c0/77774d1ece5bd7b0bfe8272a50d6a13e6ee2e756af6707ba76346107b918eb0904148db557f9a3bc7e164e2c1e2743a08a021bac488c08f6cbebee1e8b2a4d0f
   languageName: node
   linkType: hard
 
@@ -4753,15 +4719,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:2.1.1":
-  version: 2.1.1
-  resolution: "multer@npm:2.1.1"
+"multer@npm:2.2.0":
+  version: 2.2.0
+  resolution: "multer@npm:2.2.0"
   dependencies:
     append-field: "npm:^1.0.0"
     busboy: "npm:^1.6.0"
     concat-stream: "npm:^2.0.0"
     type-is: "npm:^1.6.18"
-  checksum: 10c0/2ec4e02833b20f403cfb879d4b64d2a9070d902b9deae7aef18a6faadb707d7665385456cf540aa8a6dadfe3d4c5fc8e0e7b0675b94e1077048b1125426deee6
+  checksum: 10c0/7aa366d89042427347b6ab8e4a203405d7fe942e4a3095648a14526fcf3691d98ffc2da62abf85d8aca0a341f828168eb197b33cfdcfcce29d6ef593a5625591
   languageName: node
   linkType: hard
 
@@ -5482,15 +5448,6 @@ __metadata:
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: 10c0/6501914237c0a86e9675d4e51d89ca3c21ffd6a31642efeba25ad65720bce6921c9e7e974e5be91a786b25aa058b5303285d3c15dbabf983a919f5f630d349f3
-  languageName: node
-  linkType: hard
-
-"safe-regex2@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "safe-regex2@npm:4.0.0"
-  dependencies:
-    ret: "npm:~0.5.0"
-  checksum: 10c0/faebf910036228868e83b4a33a84405b04e8e89f01283efe847e17e96b6b4658cc65c6560cef11de3bd5aef3b28b58dffac48744df67ca2ae46e073f668cb71d
   languageName: node
   linkType: hard
 
