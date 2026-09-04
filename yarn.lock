@@ -1050,8 +1050,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/common@npm:^11.1.19":
-  version: 11.1.29
-  resolution: "@nestjs/common@npm:11.1.29"
+  version: 11.2.3
+  resolution: "@nestjs/common@npm:11.2.3"
   dependencies:
     file-type: "npm:21.3.4"
     iterare: "npm:1.2.1"
@@ -1068,13 +1068,13 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/5f1c65c6b07a2e9f2380cf322431a62baf761c0279eb4dee8fdee90e84347235ebde9264f8e635a2db48dac3855b31e9c3aac6af6ae50290d467f71b42326c86
+  checksum: 10c0/b8712fc715645ba541d437e9adb1f826c52714105c47dc735fafe787785129f2bbe5b852525299b2803e8e38eab0e3740a2fd88ddbefb36a7dadddf87b968936
   languageName: node
   linkType: hard
 
 "@nestjs/core@npm:^11.1.19":
-  version: 11.1.29
-  resolution: "@nestjs/core@npm:11.1.29"
+  version: 11.2.3
+  resolution: "@nestjs/core@npm:11.2.3"
   dependencies:
     fast-safe-stringify: "npm:2.1.1"
     iterare: "npm:1.2.1"
@@ -1095,13 +1095,13 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/66a787a98f21ae5ec68442892c449cd61d341c003cfc67f863f30aff5173974b3dac8d6cba2344559e1259ff0533fb3b53a73fc3b0c169f5ae3a1bdc23fba1cf
+  checksum: 10c0/6af518ef8867c292f8dde3ddcd202baefbaf61ea1dfbf3f5d375ce53459396b0f909b53eda0838355fb22c1c3002e62afc2f4b4006d3c6ebeaa0b89bda9556d6
   languageName: node
   linkType: hard
 
 "@nestjs/platform-express@npm:^11.1.19":
-  version: 11.1.29
-  resolution: "@nestjs/platform-express@npm:11.1.29"
+  version: 11.2.3
+  resolution: "@nestjs/platform-express@npm:11.2.3"
   dependencies:
     cors: "npm:2.8.6"
     express: "npm:5.2.1"
@@ -1111,18 +1111,18 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^11.0.0
     "@nestjs/core": ^11.0.0
-  checksum: 10c0/9cd265f7dcce27f2099928b72842b5b8e63457f38bfa02f3967f3bc68819922c97696f79c228c245aae6ac3adffaff52fec5868985589c4af7c358cc881a104e
+  checksum: 10c0/a4c42544c54d11580a56d2567f0e5608f2529c1336893bc3031d6c12a4efaec3ab139a09039a64a59b5cb49adaf7175f89362a6c16043cc1afea825da67bde41
   languageName: node
   linkType: hard
 
 "@nestjs/platform-fastify@npm:^11.1.19":
-  version: 11.1.29
-  resolution: "@nestjs/platform-fastify@npm:11.1.29"
+  version: 11.2.3
+  resolution: "@nestjs/platform-fastify@npm:11.2.3"
   dependencies:
     "@fastify/cors": "npm:11.3.0"
     "@fastify/formbody": "npm:8.0.2"
     fast-querystring: "npm:1.1.2"
-    fastify: "npm:5.11.0"
+    fastify: "npm:5.11.3"
     fastify-plugin: "npm:6.0.0"
     find-my-way: "npm:9.7.0"
     light-my-request: "npm:6.6.0"
@@ -1139,7 +1139,7 @@ __metadata:
       optional: true
     "@fastify/view":
       optional: true
-  checksum: 10c0/3bba723a53afc6d5ce026d9ccc6bbe637cad32988091fa01c313de72150e91e93d4d8dedbedabc0bd45c502fb72b261585e445ee878625c18c0df924efdb9a58
+  checksum: 10c0/de445d2565ebf46437eb0a75f68af18381d542914c1ea43e713c99114383f121d169bdf85daea785db52d81da0ee182055be507781e55f37fd7c420fe44997cf
   languageName: node
   linkType: hard
 
@@ -1178,8 +1178,8 @@ __metadata:
   linkType: hard
 
 "@nestjs/testing@npm:^11.1.19":
-  version: 11.1.29
-  resolution: "@nestjs/testing@npm:11.1.29"
+  version: 11.2.3
+  resolution: "@nestjs/testing@npm:11.2.3"
   dependencies:
     tslib: "npm:2.8.1"
   peerDependencies:
@@ -1192,7 +1192,7 @@ __metadata:
       optional: true
     "@nestjs/platform-express":
       optional: true
-  checksum: 10c0/b664c34acb57a51ac292491e51d60d2d7f038e8171033fade3c6788cb8529345f2649da73550bfe371552a02835577640c3082264f3aa544d5cd6c348e4c6075
+  checksum: 10c0/e687f1bec4e3ee2c0ced6e2574fb54c68c36bb0eae6eec0cb77d0f7044292a8acd264c3e900d2ba7532c258558d278413785c527d370066e9617ff473eee89c7
   languageName: node
   linkType: hard
 
@@ -3565,9 +3565,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:5.11.0":
-  version: 5.11.0
-  resolution: "fastify@npm:5.11.0"
+"fastify@npm:5.11.3":
+  version: 5.11.3
+  resolution: "fastify@npm:5.11.3"
   dependencies:
     "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
@@ -3584,7 +3584,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/baca681a07272e7483ab453d4ef4df645c7512ac74162ef25190bb6e303ba115d009a349dd242a86d2cf8f931334bd31e89bb4e8f12a25d453076829cf149d27
+  checksum: 10c0/a48aeb99e3dd5fe932400d5610f7cf7d4b3c9915f231090a598d469564e21c7fe0513e8e49bbc713a2a9e8f882960bfea295c30f7af61feb32b1f9a7277c16d1
   languageName: node
   linkType: hard
 
