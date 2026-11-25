@@ -4620,7 +4620,7 @@ __metadata:
     fastify: "npm:^5.8.5"
     globals: "npm:^17.6.0"
     handlebars: "npm:^4.7.9"
-    nodemailer: "npm:^8.0.7"
+    nodemailer: "npm:^10.0.0"
     prettier: "npm:^3.8.3"
     redis: "npm:^5.12.1"
     reflect-metadata: "npm:^0.2.2"
@@ -4946,10 +4946,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^8.0.7":
-  version: 8.0.11
-  resolution: "nodemailer@npm:8.0.11"
-  checksum: 10c0/19229216c63a32eae59d7b39f3dffeba20be317f2335d08d86fb70bd01845a1bf108fecd019c0e90ef186e3d9177cf478192b333cf38620ad0f8c7a6e1e5ae05
+"nodemailer@npm:^10.0.0":
+  version: 10.6.1
+  resolution: "nodemailer@npm:10.6.1"
+  checksum: 10c0/a050116bf03e84cfd1d391ae010f8f5067c8caaab9e908bbf7e3b2de49e7d6471fa739c8a126c3ea57fa927c962c7533848d22df0641f3b7c64ec2c5f888ae92
   languageName: node
   linkType: hard
 
